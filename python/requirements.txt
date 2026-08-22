@@ -1,0 +1,7 @@
+# Installed by the app runtime (uv pip install) the first time the app starts.
+# numpy, pandas, opencv-python-headless and pillow are already in the base image.
+#
+# scikit-learn powers the IsolationForest anomaly detector in predictive.py.
+# If this install fails (e.g. the board is offline) the app still runs and falls
+# back to a robust median/MAD z-score detector - see predictive.py.
+scikit-learn>=1.6,<2.0

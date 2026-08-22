@@ -1,0 +1,18 @@
+# app.yaml: The main configuration file for your Arduino App.
+
+name: Telltale
+icon: 🎯
+
+description: >
+  Reads what silent equipment can't tell you. An AprilTag identifies an asset; the camera
+  reads its analog gauge, a time-of-flight sensor measures how much it shakes and a thermal
+  array measures how hot it runs. Everything lands in SQLite and feeds an on-device
+  predictive-maintenance model (IsolationForest + trend forecast).
+
+# The Web UI is served here.
+ports: [7000]
+
+# Every "from arduino.app_bricks.<x>" import in python/ must appear here.
+bricks:
+  - arduino:web_ui
+  - arduino:dbstorage_sqlstore

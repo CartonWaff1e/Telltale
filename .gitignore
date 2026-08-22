@@ -1,0 +1,27 @@
+# App Lab build cache: venv, compiled sketch, uv cache. Regenerated on every start.
+.cache/
+
+# Runtime state, not source. The SQLite database holds calibrations and readings that
+# belong to one physical rig - committing it would push someone else's baseline around.
+data/
+*.db
+*.db-journal
+*.db-wal
+
+# Wheels dropped in by the runtime after install
+python-libraries/*.whl.installed
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini

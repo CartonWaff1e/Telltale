@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Telltale</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="dot" id="conn-dot"></span>
+        <h1>Telltale</h1>
+      </div>
+      <div class="top-meta">
+        <span class="pill" id="status-pill">BOOT</span>
+        <span class="meta" id="asset-name">no asset</span>
+        <span class="chip" id="chip-tof">ToF –</span>
+        <span class="chip" id="chip-thermal">Thermal –</span>
+        <span class="badge" id="backend-badge">–</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel preview-panel">
+        <div class="panel-head">
+          <h2>Live view</h2>
+          <button id="btn-capture" class="btn primary">Capture now</button>
+        </div>
+        <div class="preview-wrap">
+          <img id="preview" alt="camera preview" />
+          <div id="preview-fallback" class="fallback">waiting for the camera…</div>
+        </div>
+        <div class="tags" id="tag-list"></div>
+        <p class="hint" id="capture-hint"></p>
+
+        <h3>MCU sensors</h3>
+        <div class="kv" id="sensor-kv"></div>
+      </section>
+
+      <section class="panel">
+        <nav class="tabs">
+          <button class="tab active" data-tab="reading">Readings</button>
+          <button class="tab" data-tab="assign">Assign tag</button>
+          <button class="tab" data-tab="history">History</button>
+          <button class="tab" data-tab="events">Events</button>
+        </nav>
+
+        <!-- ------------------------------------------------ readings -->
+        <div class="tabpane active" id="tab-reading">
+          <div id="channel-cards"></div>
+        </div>
+
+        <!-- -------------------------------------------------- assign -->
+        <div class="tabpane" id="tab-assign">
+          <p class="hint">
+            One tag, one asset. Enable the channels you want; any combination is fine.
+            A channel whose sensor isn’t connected is skipped, not failed.
+          </p>
+
+          <div class="grid2">
+            <label>Asset id<input id="f-asset-id" placeholder="pump-3" /></label>
+            <label>Label<input id="f-label" placeholder="Coolant pump, north wall" /></label>
+            <label>AprilTag id
+              <select id="f-tag-id"></select>
+            </label>
+          </div>
+
+          <!-- gauge ------------------------------------------------ -->
+          <div class="channel-block">
+            <label class="toggle">
+              <input type="checkbox" id="en-gauge" /> <strong>Gauge</strong>
+              <span class="muted">needle read from the camera</span>
+            </label>
+            <div class="channel-body" id="body-gauge">
+              <ol class="steps" id="cal-steps">
+                <li data-step="0">Get the tag and the whole dial in frame, then freeze.</li>
+                <li data-step="1">Click the <strong>centre</strong> of the dial.</li>
+                <li data-step="2">Click a point on the <strong>rim</strong>.</li>
+                <li data-step="3">Click the needle tip at the <strong>minimum</strong> mark.</li>
+                <li data-step="4">Click the needle tip at the <strong>maximum</strong> mark.</li>
+                <li data-step="5">Fill in the scale, test, then save.</li>
+              </ol>
+              <div class="row wrap">
+                <button id="btn-freeze" class="btn primary">Freeze frame</button>
+                <button id="btn-reset-points" class="btn">Clear points</button>
+              </div>
+              <div class="cal-canvas-wrap"><canvas id="cal-canvas"></canvas></div>
+              <p class="hint" id="cal-hint">Freeze a frame to begin.</p>
+              <div class="grid2">
+                <label>Unit<input id="f-g-unit" placeholder="bar" /></label>
+                <label>Needle is dark
+                  <select id="f-g-dark">
+                    <option value="1" selected>yes (dark needle, light face)</option>
+                    <option value="0">no (light needle, dark face)</option>
+                  </select>
+                </label>
+                <label>Value at min<input id="f-g-vmin" type="number" step="any" value="0" /></label>
+                <label>Value at max<input id="f-g-vmax" type="number" step="any" value="100" /></label>
+                <label>Warn low<input id="f-g-wl" type="number" step="any" placeholder="optional" /></label>
+                <label>Warn high<input id="f-g-wh" type="number" step="any" placeholder="optional" /></label>
+                <label>Alarm low<input id="f-g-al" type="number" step="any" placeholder="optional" /></label>
+                <label>Alarm high<input id="f-g-ah" type="number" step="any" placeholder="optional" /></label>
+                <label>Search from (× radius)<input id="f-g-rin" type="number" step="0.01" value="0.25" /></label>
+                <label>Search to (× radius)<input id="f-g-rout" type="number" step="0.01" value="0.92" /></label>
+              </div>
+              <div class="row wrap"><button id="btn-test" class="btn">Test read</button></div>
+              <div id="cal-result" class="result"></div>
+            </div>
+          </div>
+
+          <!-- vibration -------------------------------------------- -->
+          <div class="channel-block">
+            <label class="toggle">
+              <input type="checkbox" id="en-vibration" /> <strong>Vibration</strong>
+              <span class="muted">time-of-flight wobble</span>
+            </label>
+            <div class="channel-body" id="body-vibration">
+              <p class="hint" id="vib-live">Aim the rangefinder at the machine and set limits from the live figures below.</p>
+              <div class="grid2">
+                <label>Metric
+                  <select id="f-v-metric">
+                    <option value="rms" selected>RMS deviation (mm)</option>
+                    <option value="peak_to_peak">Peak-to-peak (mm)</option>
+                  </select>
+                </label>
+                <label>Settle time (s)<input id="f-v-settle" type="number" step="0.1" value="1.5" /></label>
+                <label>Warn above (mm)<input id="f-v-wh" type="number" step="any" placeholder="optional" /></label>
+                <label>Alarm above (mm)<input id="f-v-ah" type="number" step="any" placeholder="optional" /></label>
+                <label>Min stand-off (mm)<input id="f-v-dmin" type="number" step="any" value="30" /></label>
+                <label>Max stand-off (mm)<input id="f-v-dmax" type="number" step="any" value="2000" /></label>
+              </div>
+            </div>
+          </div>
+
+          <!-- temperature ------------------------------------------ -->
+          <div class="channel-block">
+            <label class="toggle">
+              <input type="checkbox" id="en-temperature" /> <strong>Temperature</strong>
+              <span class="muted">thermal array</span>
+            </label>
+            <div class="channel-body" id="body-temperature">
+              <p class="hint" id="temp-live">Aim the thermal array at the asset and set limits from the live figures below.</p>
+              <div class="grid2">
+                <label>Metric
+                  <select id="f-t-metric">
+                    <option value="max" selected>Hottest pixel (°C)</option>
+                    <option value="mean">Frame mean (°C)</option>
+                    <option value="min">Coldest pixel (°C)</option>
+                    <option value="delta_ambient">Hottest minus background (K)</option>
+                  </select>
+                </label>
+                <label>Warn low<input id="f-t-wl" type="number" step="any" placeholder="optional" /></label>
+                <label>Warn high<input id="f-t-wh" type="number" step="any" placeholder="optional" /></label>
+                <label>Alarm low<input id="f-t-al" type="number" step="any" placeholder="optional" /></label>
+                <label>Alarm high<input id="f-t-ah" type="number" step="any" placeholder="optional" /></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row wrap">
+            <button id="btn-save" class="btn primary">Save asset</button>
+          </div>
+
+          <h3>Saved assets</h3>
+          <div id="asset-list" class="cal-list"></div>
+        </div>
+
+        <!-- ------------------------------------------------- history -->
+        <div class="tabpane" id="tab-history">
+          <div class="row wrap">
+            <label class="inline">Channel
+              <select id="hist-channel">
+                <option value="gauge">gauge</option>
+                <option value="vibration">vibration</option>
+                <option value="temperature">temperature</option>
+              </select>
+            </label>
+            <label class="inline">Window
+              <select id="hist-hours">
+                <option value="1">1 h</option>
+                <option value="6">6 h</option>
+                <option value="24" selected>24 h</option>
+                <option value="168">7 days</option>
+                <option value="720">30 days</option>
+              </select>
+            </label>
+            <button id="btn-refresh-history" class="btn">Refresh</button>
+            <button id="btn-clear-history" class="btn danger">Clear this channel</button>
+          </div>
+          <canvas id="chart" height="220"></canvas>
+          <div class="table-wrap">
+            <table id="readings-table">
+              <thead>
+                <tr><th>Time</th><th>Channel</th><th>Value</th><th>Status</th><th>Conf.</th><th>Anomaly</th><th>Shot</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- -------------------------------------------------- events -->
+        <div class="tabpane" id="tab-events">
+          <div class="table-wrap">
+            <table id="events-table">
+              <thead><tr><th>Time</th><th>Asset</th><th>Channel</th><th>Severity</th><th>Message</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
