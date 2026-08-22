@@ -5,10 +5,8 @@
 > slow leak.
 
 Point a camera at an AprilTag stuck next to a piece of equipment, and this thing reads the
-gauge on it, measures how much it's shaking, checks how hot it's running, writes all of it
+gauge on it, measures how much it's vibrating, checks how hot it's running, writes all of it
 to a database, and tells you when something's drifting toward trouble.
-
-Old machinery can't report anything about itself. This makes it talk.
 
 It runs entirely on an Arduino UNO Q. No cloud, no network needed after setup.
 
@@ -68,24 +66,6 @@ Full walkthrough in [docs/setup.md](docs/setup.md) and [docs/calibration.md](doc
 | [Data model](docs/data-model.md) | Database schema and migrations |
 | [Troubleshooting](docs/troubleshooting.md) | Things that go wrong, and what they mean |
 | [Development](docs/development.md) | Working on the code, the edit-sync-restart loop, gotchas |
-
-## What's actually been tested
-
-Being straight about this, because half-finished projects that claim to work waste everyone's
-time.
-
-**Confirmed working on hardware:** camera capture at 1280×720, AprilTag detection and the
-stability gate, gauge calibration through the web UI, SQLite storage, the web UI itself,
-`scikit-learn` installing on first boot and the IsolationForest backend coming up.
-
-**Fixed but not yet re-run:** the needle reader. It was crashing on every frame due to a numpy
-broadcasting mistake (see [troubleshooting](docs/troubleshooting.md#the-loop-throws-on-every-frame)).
-The fix is in, the restart hasn't happened yet.
-
-**Written but never executed:** everything to do with the two I²C sensors — the vibration and
-temperature channels, `sensors.py`, and the sketch that drives the VL53L0X and MLX90640. The
-sketch has not been compiled since those libraries were added. Treat that half as a first
-draft that needs a bring-up session, not as working code.
 
 ## Layout
 
