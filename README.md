@@ -67,6 +67,15 @@ Full walkthrough in [docs/setup.md](docs/setup.md) and [docs/calibration.md](doc
 | [Troubleshooting](docs/troubleshooting.md) | Things that go wrong, and what they mean |
 | [Development](docs/development.md) | Working on the code, the edit-sync-restart loop, gotchas |
 
+## Licence
+
+MIT — see [LICENSE](LICENSE). Use it, change it, ship it commercially; just keep the
+copyright notice.
+
+Dependencies are all permissive too: numpy and scikit-learn are BSD, OpenCV is Apache-2.0,
+and `Arduino_RouterBridge` is MPL-2.0, which is file-level copyleft and so doesn't reach
+your code.
+
 ## Layout
 
 ```
