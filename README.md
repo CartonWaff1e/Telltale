@@ -1,4 +1,4 @@
-# 🎯 Telltale
+# Telltale
 
 > *telltale* (n.) — an instrument or marker that reveals a condition you couldn't otherwise
 > see: the warning lamps on a dashboard, the ribbons on a sail, the stain that gives away a
@@ -7,6 +7,8 @@
 Point a camera at an AprilTag stuck next to a piece of equipment, and this thing reads the
 gauge on it, measures how much it's vibrating, checks how hot it's running, writes all of it
 to a database, and tells you when something's drifting toward trouble.
+
+<img width="1280" height="1059" alt="WhatsApp Image 2026-08-25 at 9 16 20 PM" src="https://github.com/user-attachments/assets/88799cc1-c0e9-4f22-852a-ec7fb9e9115c" />
 
 It runs entirely on an Arduino UNO Q. No cloud, no network needed after setup.
 
